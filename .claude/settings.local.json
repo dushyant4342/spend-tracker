@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python:*)",
+      "Bash(source /c/Users/dushyant/Desktop/expense-tracker/venv/Scripts/activate)"
+    ]
+  }
+}
