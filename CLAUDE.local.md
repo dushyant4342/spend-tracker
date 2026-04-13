@@ -1,0 +1,1 @@
+Concise responses only; no filler phrases; prefer async Python patterns; never use em dashes.
