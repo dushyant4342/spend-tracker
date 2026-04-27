@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}Profile — Spendly{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="profile-page">
+    <div class="profile-inner">
+
+        {# ── Hero header ─────────────────────────────────────────────── #}
+        <div class="profile-hero">
+            <div class="profile-hero-left">
+                <div class="profile-avatar">{{ user.name[0] }}</div>
+                <div class="profile-identity">
+                    <h1 class="profile-name">{{ user.name }}</h1>
+                    <p class="profile-email">{{ user.email }}</p>
+                    <span class="profile-since-badge">Member since {{ user.member_since }}</span>
+                </div>
+            </div>
+            <a href="{{ url_for('logout') }}" class="btn-ghost profile-logout">Sign out</a>
+        </div>
+
+        {# ── Summary stats ────────────────────────────────────────────── #}
+        <div class="profile-stats">
+            <div class="stat-card stat-card-featured">
+                <span class="stat-glyph">₹</span>
+                <span class="stat-label">Total spent</span>
+                <span class="stat-value">₹{{ "{:,}".format(stats.total_spent) }}</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-glyph">#</span>
+                <span class="stat-label">Transactions</span>
+                <span class="stat-value">{{ stats.transaction_count }}</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-glyph">◎</span>
+                <span class="stat-label">Top category</span>
+                <span class="stat-value">{{ stats.top_category }}</span>
+            </div>
+        </div>
+
+        {# ── Lower grid ───────────────────────────────────────────────── #}
+        <div class="profile-grid">
+
+            {# Category breakdown #}
+            <div class="profile-card">
+                <h2 class="profile-card-title">Spending by category</h2>
+                {% set max_amt = categories | map(attribute='amount') | max %}
+                {% set total   = categories | map(attribute='amount') | sum %}
+                <div class="breakdown-list">
+                    {% for cat in categories %}
+                    <div class="breakdown-row">
+                        <div class="breakdown-meta">
+                            <span class="breakdown-dot breakdown-dot-{{ loop.index }}"></span>
+                            <span class="breakdown-name">{{ cat.name }}</span>
+                        </div>
+                        <div class="breakdown-bar-track">
+                            <div class="breakdown-bar breakdown-bar-{{ loop.index }}"
+                                 style="width: {{ (cat.amount / max_amt * 100) | round | int }}%">
+                            </div>
+                        </div>
+                        <div class="breakdown-right">
+                            <span class="breakdown-pct">{{ (cat.amount / total * 100) | round | int }}%</span>
+                            <span class="breakdown-amt">₹{{ "{:,}".format(cat.amount) }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            {# Transaction history #}
+            <div class="profile-card">
+                <div class="profile-card-header">
+                    <h2 class="profile-card-title">Recent transactions</h2>
+                    <span class="txn-count">{{ transactions | length }} entries</span>
+                </div>
+                <table class="txn-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th>Category</th>
+                            <th class="txn-amt-col">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for txn in transactions %}
+                        <tr>
+                            <td class="txn-date">{{ txn.date }}</td>
+                            <td class="txn-desc">{{ txn.description }}</td>
+                            <td><span class="txn-badge txn-badge-{{ txn.category | lower }}">{{ txn.category }}</span></td>
+                            <td class="txn-amt">₹{{ "{:,}".format(txn.amount) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
