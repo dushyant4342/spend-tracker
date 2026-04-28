@@ -69,6 +69,10 @@
                     </div>
                     {% endfor %}
                 </div>
+                <div class="breakdown-total">
+                    <span class="breakdown-total-label">Total</span>
+                    <span class="breakdown-total-amt">₹{{ "{:,}".format(total) }}</span>
+                </div>
             </div>
 
             {# Transaction history #}
@@ -89,7 +93,7 @@
                     <tbody>
                         {% for txn in transactions %}
                         <tr>
-                            <td class="txn-date">{{ txn.date }}</td>
+                            <td class="txn-date">{{ txn.date | fmtdate }}</td>
                             <td class="txn-desc">{{ txn.description }}</td>
                             <td><span class="txn-badge txn-badge-{{ txn.category | lower }}">{{ txn.category }}</span></td>
                             <td class="txn-amt">₹{{ "{:,}".format(txn.amount) }}</td>

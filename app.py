@@ -1,6 +1,7 @@
 from flask import Flask, render_template, session, redirect, url_for, request
 from werkzeug.security import generate_password_hash, check_password_hash
 from database.db import get_db, close_db, init_db
+from datetime import datetime
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'dev-secret-change-in-production'
@@ -9,6 +10,14 @@ app.teardown_appcontext(close_db)
 
 with app.app_context():
     init_db()
+
+
+@app.template_filter('fmtdate')
+def format_date(value: str) -> str:
+    try:
+        return datetime.strptime(value, '%Y-%m-%d').strftime('%b %d, %Y')
+    except (ValueError, TypeError):
+        return value
 
 
 # ------------------------------------------------------------------ #
